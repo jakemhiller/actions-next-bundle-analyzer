@@ -8,6 +8,9 @@ inputs:
   working-directory:
     description: 'Directory containing built files'
     default: ''
+  size-threshold:
+    description: 'Size to mark as too large'
+    default: 500
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -185,8 +185,23 @@ function formatBytes(bytes: number, signed = false) {
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
   const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
+  let isFailing = bytes > 500000;
 
-  return `${sign}${parseFloat(Math.abs(bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
+  const result = `${sign}${parseFloat(Math.abs(bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
+
+  if (isFailing) {
+    return `
+\`\`\`diff
+- ${result}
+\`\`\`
+`;
+  } else {
+    return `
+\`\`\`
+  ${result}
+\`\`\`
+`;
+  }
 }
 
 function getSign(bytes: number) {
