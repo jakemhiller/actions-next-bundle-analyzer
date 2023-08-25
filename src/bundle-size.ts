@@ -1,3 +1,4 @@
+import { SummaryTableRow } from '@actions/core/lib/summary';
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
@@ -15,7 +16,7 @@ export type PageBundleSizes = { page: string; size: number }[];
 export function getStaticBundleSizes(workingDir: string): PageBundleSizes {
   const manifest = loadBuildManifest(workingDir);
 
-  return getPageSizesFromManifest(manifest,workingDir);
+  return getPageSizesFromManifest(manifest, workingDir);
 }
 
 export function getDynamicBundleSizes(workingDir: string): PageBundleSizes {
@@ -25,11 +26,11 @@ export function getDynamicBundleSizes(workingDir: string): PageBundleSizes {
   return getPageSizesFromManifest(manifest, workingDir);
 }
 
-function getPageSizesFromManifest(manifest: BuildManifest,workingDir: string): PageBundleSizes {
+function getPageSizesFromManifest(manifest: BuildManifest, workingDir: string): PageBundleSizes {
   return Object.entries(manifest.pages).map(([page, files]) => {
     const size = files
       .map((filename: string) => {
-        const fn = path.join(process.cwd(), workingDir,'.next', filename);
+        const fn = path.join(process.cwd(), workingDir, '.next', filename);
         const bytes = fs.readFileSync(fn);
         const gzipped = zlib.gzipSync(bytes);
         return gzipped.byteLength;
@@ -41,7 +42,10 @@ function getPageSizesFromManifest(manifest: BuildManifest,workingDir: string): P
 }
 
 function loadBuildManifest(workingDir: string): BuildManifest {
-  const file = fs.readFileSync(path.join(process.cwd(), workingDir, '.next', 'build-manifest.json'), 'utf-8');
+  const file = fs.readFileSync(
+    path.join(process.cwd(), workingDir, '.next', 'build-manifest.json'),
+    'utf-8',
+  );
   return JSON.parse(file);
 }
 
@@ -71,15 +75,21 @@ function getFiles(chunks: Next10Chunks | Next12Chunks): string[] {
   return (chunks as Next10Chunks).map(({ file }) => file);
 }
 
-export function getMarkdownTable(
+export function getAnnotationsTable(
   masterBundleSizes: PageBundleSizes = [],
   bundleSizes: PageBundleSizes,
   name: string = 'Route',
-): string {
+): SummaryTableRow[] {
   // Produce a Markdown table with each page, its size and difference to master
   const rows = getPageChangeInfo(masterBundleSizes, bundleSizes);
   if (rows.length === 0) {
-    return `${name}: None found.`;
+    return [
+      [
+        { data: `${name}`, header: true },
+        { data: '', header: true },
+      ],
+      [`${name}: None found.`, ''],
+    ];
   }
 
   // No diff if master bundle sizes is empty
@@ -91,7 +101,14 @@ export function getMarkdownTable(
   if (significant.length > 0) {
     return formatTable(name, significant);
   }
-  return `${name}: No significant changes found`;
+
+  return [
+    [
+      { data: `${name}`, header: true },
+      { data: '', header: true },
+    ],
+    ['No significant changes found', ''],
+  ];
 }
 
 type PageChangeInfo = {
@@ -129,25 +146,32 @@ function getSignificant(rows: PageChangeInfo[]): PageChangeInfo[] {
   return rows.filter(({ type, diff }) => type !== 'changed' || diff >= 1000 || diff <= -1000);
 }
 
-function formatTable(name: string, rows: PageChangeInfo[]): string {
+function formatTable(name: string, rows: PageChangeInfo[]) {
   const rowStrs = rows.map(({ page, type, size, diff }) => {
     const diffStr = type === 'changed' ? formatBytes(diff, true) : type;
-    return `| \`${page}\` | ${formatBytes(size)} | ${diffStr} |`;
+    return [page, formatBytes(size), diffStr];
   });
-
-  return `| ${name} | Size (gzipped) | Diff |
-  | --- | --- | --- |
-  ${rowStrs.join('\n')}`;
+  return [
+    [
+      { data: `${name}`, header: true },
+      { data: 'Size (gzipped)', header: true },
+      { data: 'Diff', header: true },
+    ],
+    ...rowStrs,
+  ];
 }
 
-function formatTableNoDiff(name: string, rows: PageChangeInfo[]): string {
-  const rowStrs = rows.map(({ page, size }) => {
-    return `| \`${page}\` | ${formatBytes(size)} |`;
+function formatTableNoDiff(name: string, rows: PageChangeInfo[]) {
+  const rowStrs = rows.map(({ page, type, size, diff }) => {
+    return [page, formatBytes(size)];
   });
-
-  return `| ${name} | Size (gzipped) |
-  | --- | --- |
-  ${rowStrs.join('\n')}`;
+  return [
+    [
+      { data: `${name}`, header: true },
+      { data: 'Size (gzipped)', header: true },
+    ],
+    ...rowStrs,
+  ];
 }
 
 function formatBytes(bytes: number, signed = false) {

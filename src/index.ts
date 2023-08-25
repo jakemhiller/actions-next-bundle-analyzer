@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { getStaticBundleSizes, getDynamicBundleSizes, getMarkdownTable } from './bundle-size';
+import { getStaticBundleSizes, getDynamicBundleSizes, getAnnotationsTable } from './bundle-size';
 
 import { createOrReplaceComment } from './comments';
 import { createOrReplaceIssue } from './issue';
@@ -53,19 +53,24 @@ async function run() {
       const prefix = '### Bundle Sizes';
       const info = `Compared against ${masterBundleSizes.sha}`;
 
-      const routesTable = getMarkdownTable(masterBundleSizes.data, bundleSizes, 'Route');
-      const dynamicTable = getMarkdownTable(
+      const routesTable = getAnnotationsTable(masterBundleSizes.data, bundleSizes, 'Route');
+      const dynamicTable = getAnnotationsTable(
         masterDynamicBundleSizes.data,
         dynamicBundleSizes,
         'Dynamic import',
       );
       const body = `${prefix}\n\n` + `${info}\n\n` + `${routesTable}\n\n` + `${dynamicTable}\n\n`;
-      createOrReplaceComment(octokit, issueNumber, prefix, body);
+      await core.summary
+        .addHeading('Bundle Sizes')
+        .addRaw(info)
+        .addTable(routesTable)
+        .addTable(dynamicTable)
+        .write();
     } else if (github.context.ref === `refs/heads/${baseBranch}`) {
       console.log('> Creating/updating bundle size issue');
 
-      const routesTableNoDiff = getMarkdownTable([], bundleSizes, 'Route');
-      const dynamicTableNoDiff = getMarkdownTable([], dynamicBundleSizes, 'Dynamic import');
+      const routesTableNoDiff = getAnnotationsTable([], bundleSizes, 'Route');
+      const dynamicTableNoDiff = getAnnotationsTable([], dynamicBundleSizes, 'Dynamic import');
       const bodyNoDiff = `${routesTableNoDiff}\n\n` + `${dynamicTableNoDiff}\n\n`;
       createOrReplaceIssue(octokit, bodyNoDiff);
     }
