@@ -16587,7 +16587,7 @@ function rng() {
 
 /***/ }),
 
-/***/ 5274:
+/***/ 6858:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16942,7 +16942,7 @@ exports["default"] = void 0;
 
 var _v = _interopRequireDefault(__nccwpck_require__(5998));
 
-var _sha = _interopRequireDefault(__nccwpck_require__(5274));
+var _sha = _interopRequireDefault(__nccwpck_require__(6858));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19420,7 +19420,7 @@ function getSign(bytes) {
     return bytes < 0 ? '-' : '+';
 }
 
-;// CONCATENATED MODULE: ./src/comments.ts
+;// CONCATENATED MODULE: ./src/issue.ts
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -19469,89 +19469,11 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
     }
 };
 
-function createOrReplaceComment(octokit, issueNumber, searchString, body) {
-    return __awaiter(this, void 0, void 0, function () {
-        var comments, existing, response, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, octokit.rest.issues.listComments(__assign(__assign({}, github.context.repo), { issue_number: issueNumber }))];
-                case 1:
-                    comments = _a.sent();
-                    existing = comments.data.find(function (comment) { return comment.body && comment.body.includes(searchString); });
-                    if (!existing) return [3 /*break*/, 3];
-                    console.log("Updating comment ".concat(existing.id));
-                    return [4 /*yield*/, octokit.rest.issues.updateComment(__assign(__assign({}, github.context.repo), { comment_id: existing.id, body: body }))];
-                case 2:
-                    response = _a.sent();
-                    console.log("Done with status ".concat(response.status));
-                    return [3 /*break*/, 5];
-                case 3:
-                    console.log("Creating comment on PR ".concat(issueNumber));
-                    return [4 /*yield*/, octokit.rest.issues.createComment(__assign(__assign({}, github.context.repo), { issue_number: issueNumber, body: body }))];
-                case 4:
-                    response = _a.sent();
-                    console.log("Done with status ".concat(response.status));
-                    _a.label = 5;
-                case 5: return [2 /*return*/];
-            }
-        });
-    });
-}
-
-;// CONCATENATED MODULE: ./src/issue.ts
-var issue_assign = (undefined && undefined.__assign) || function () {
-    issue_assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return issue_assign.apply(this, arguments);
-};
-var issue_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var issue_generator = (undefined && undefined.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-
 var ISSUE_TITLE = 'Current Bundle Sizes';
 function createOrReplaceIssue(octokit, body) {
-    return issue_awaiter(this, void 0, void 0, function () {
+    return __awaiter(this, void 0, void 0, function () {
         var issues, existing, issue_number, response, response;
-        return issue_generator(this, function (_a) {
+        return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, octokit.rest.issues.listForRepo(github.context.repo)];
                 case 1:
@@ -19560,14 +19482,14 @@ function createOrReplaceIssue(octokit, body) {
                     if (!existing) return [3 /*break*/, 3];
                     issue_number = existing.number;
                     console.log("Updating issue ".concat(issue_number, " with latest bundle sizes"));
-                    return [4 /*yield*/, octokit.rest.issues.update(issue_assign(issue_assign({}, github.context.repo), { body: body, issue_number: issue_number }))];
+                    return [4 /*yield*/, octokit.rest.issues.update(__assign(__assign({}, github.context.repo), { body: body, issue_number: issue_number }))];
                 case 2:
                     response = _a.sent();
                     console.log("Issue update response status ".concat(response.status));
                     return [3 /*break*/, 5];
                 case 3:
                     console.log("Creating issue ".concat(ISSUE_TITLE, " to show latest bundle sizes"));
-                    return [4 /*yield*/, octokit.rest.issues.create(issue_assign(issue_assign({}, github.context.repo), { body: body, title: ISSUE_TITLE }))];
+                    return [4 /*yield*/, octokit.rest.issues.create(__assign(__assign({}, github.context.repo), { body: body, title: ISSUE_TITLE }))];
                 case 4:
                     response = _a.sent();
                     console.log("Issue creation response status ".concat(response.status));
@@ -19794,14 +19716,13 @@ var src_generator = (undefined && undefined.__generator) || function (thisArg, b
 
 
 
-
 var ARTIFACT_NAME = 'next-bundle-analyzer';
 var FILE_NAME = 'bundle-sizes.json';
 var DYNAMIC_FILE_NAME = 'dynamic-bundle-sizes.json';
 function run() {
     var _a;
     return src_awaiter(this, void 0, void 0, function () {
-        var workflowId, baseBranch, workingDir, octokit, issueNumber, masterBundleSizes, masterDynamicBundleSizes, bundleSizes, dynamicBundleSizes, prefix, info, routesTable, dynamicTable, body, routesTableNoDiff, dynamicTableNoDiff, bodyNoDiff, e_1;
+        var workflowId, baseBranch, workingDir, octokit, issueNumber, masterBundleSizes, masterDynamicBundleSizes, bundleSizes, dynamicBundleSizes, info, routesTable, dynamicTable, routesTableNoDiff, dynamicTableNoDiff, bodyNoDiff, e_1;
         return src_generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -19834,11 +19755,9 @@ function run() {
                     _b.sent();
                     if (!issueNumber) return [3 /*break*/, 6];
                     console.log('> Commenting on PR');
-                    prefix = '### Bundle Sizes';
                     info = "Compared against ".concat(masterBundleSizes.sha);
                     routesTable = getAnnotationsTable(masterBundleSizes.data, bundleSizes, 'Route');
                     dynamicTable = getAnnotationsTable(masterDynamicBundleSizes.data, dynamicBundleSizes, 'Dynamic import');
-                    body = "".concat(prefix, "\n\n") + "".concat(info, "\n\n") + "".concat(routesTable, "\n\n") + "".concat(dynamicTable, "\n\n");
                     return [4 /*yield*/, core.summary.addHeading('Bundle Sizes')
                             .addRaw(info)
                             .addTable(routesTable)
@@ -19846,7 +19765,6 @@ function run() {
                             .write()];
                 case 5:
                     _b.sent();
-                    createOrReplaceComment(octokit, issueNumber, prefix, body);
                     return [3 /*break*/, 7];
                 case 6:
                     if (github.context.ref === "refs/heads/".concat(baseBranch)) {

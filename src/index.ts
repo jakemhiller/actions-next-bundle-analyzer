@@ -2,7 +2,6 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { getStaticBundleSizes, getDynamicBundleSizes, getAnnotationsTable } from './bundle-size';
 
-import { createOrReplaceComment } from './comments';
 import { createOrReplaceIssue } from './issue';
 import { downloadArtifactAsJson } from './download-artifacts';
 import { uploadJsonAsArtifact } from './upload-artifacts';
@@ -50,7 +49,6 @@ async function run() {
 
     if (issueNumber) {
       console.log('> Commenting on PR');
-      const prefix = '### Bundle Sizes';
       const info = `Compared against ${masterBundleSizes.sha}`;
 
       const routesTable = getAnnotationsTable(masterBundleSizes.data, bundleSizes, 'Route');
@@ -59,7 +57,6 @@ async function run() {
         dynamicBundleSizes,
         'Dynamic import',
       );
-      const body = `${prefix}\n\n` + `${info}\n\n` + `${routesTable}\n\n` + `${dynamicTable}\n\n`;
       await core.summary
         .addHeading('Bundle Sizes')
         .addRaw(info)
